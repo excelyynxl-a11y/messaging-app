@@ -1,0 +1,70 @@
+import cloudinary from "../lib/cloudinary";
+import Message from "../models/message.model";
+import User from "../models/user.model";
+
+// get all user EXCEPT myself 
+export const getUsersForSidebar = async (req, res) => {
+    try {
+        const loggedInUserId = req.user._id;
+        const filteredUsers = User.find({ _id: { $ne: loggedInUserId }}).select("-password"); // retreive all user with userId that does not equals to my own userId, select everything except the user password 
+    
+        res.status(200).json(filteredUsers);
+    } catch (error) {
+        console.error("Error in getUsersForSidebar controller: ", error.message);
+        res.status(500).json({ error: "Internal Server Error"});
+    }
+}
+
+// get the message history with another particular user
+export const getMessages = async (req, res) => {
+    try {
+        const { id: userToChatId } = req.params;
+        const myId = req.user._id;
+
+        // get all the messages where the senderId is userToChatId and receiverId is myId (or vice versa)
+        const messages = await Message.find({
+            $or: [
+                { senderId: userToChatId, receiverId: myId },
+                { senderId: myId, receiverId: userToChatId}
+            ]
+        });
+
+        res.status(200).json(messages); 
+
+    } catch (error) {
+        console.error("Error in getMessages controller: ", error.message);
+        res.status(500).json({ error: "Internal Server Error"});
+    }
+}
+
+// send message to another user 
+export const sendMessage = async (res, req) => {
+    try {
+        const { text, image } = req.body;
+        const { id: receiverId } = req.params;
+        const senderId = req.user._id;
+
+        let imageUrl;
+        if (image) {
+            // upload base64 image to cloudinary 
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageUrl = uploadResponse.secure_url;
+        }
+
+        const newMessage = new Message({
+            senderId,
+            receiverId,
+            text,
+            image: imageUrl
+        });
+
+        await newMessage.save();
+
+        // TODO: realtime functionality using socket.io 
+        
+        res.status(201).json(newMessage);
+    } catch (error) {
+        console.error("Error in sendMessage controller: ", error.message);
+        res.status(500).json({ error: "Internal Server Error"});
+    }
+}
