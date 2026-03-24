@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
@@ -13,6 +14,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+// cors MUST be used BEFORE routes
+app.use(cors({
+    origin: 'http://localhost:5175',
+    credentials: true
+}));
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 
