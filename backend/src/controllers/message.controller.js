@@ -6,14 +6,14 @@ import User from "../models/user.model.js";
 export const getUsersForSidebar = async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
-        const filteredUsers = User.find({ _id: { $ne: loggedInUserId }}).select("-password"); // retreive all user with userId that does not equals to my own userId, select everything except the user password 
-    
+        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+
         res.status(200).json(filteredUsers);
     } catch (error) {
-        console.error("Error in getUsersForSidebar controller: ", error.message);
-        res.status(500).json({ error: "Internal Server Error"});
+        console.error("Error in getUsersForSidebar: ", error.message);
+        res.status(500).json({ error: "Internal server error" });
     }
-}
+};
 
 // get the message history with another particular user
 export const getMessages = async (req, res) => {
@@ -38,7 +38,7 @@ export const getMessages = async (req, res) => {
 }
 
 // send message to another user 
-export const sendMessage = async (res, req) => {
+export const sendMessage = async (req, res) => {
     try {
         const { text, image } = req.body;
         const { id: receiverId } = req.params;
@@ -65,6 +65,6 @@ export const sendMessage = async (res, req) => {
         res.status(201).json(newMessage);
     } catch (error) {
         console.error("Error in sendMessage controller: ", error.message);
-        res.status(500).json({ error: "Internal Server Error"});
+        res.status(500).json({ error: "Internal server error" });
     }
 }
