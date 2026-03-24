@@ -66,12 +66,12 @@ const SignUpPage = () => {
 
                     {/* sign up form */}
                     <form 
-                        className=''
+                        className="space-y-6"
                         onSubmit={handleSubmit}
                     >
                         {/* name input */}
                         <div className="form-control">
-                            <label className="label pb-2">
+                            <label className="label">
                                 <span className="label-text font-medium">
                                     Full Name
                                 </span>
@@ -94,7 +94,7 @@ const SignUpPage = () => {
 
                         {/* email input */}
                         <div className="form-control">
-                            <label className="label pb-2 pt-2">
+                            <label className="label">
                                 <span className="label-text font-medium">
                                     Email
                                 </span>
@@ -117,7 +117,7 @@ const SignUpPage = () => {
 
                         {/* password input */}
                         <div className="form-control">
-                            <label className="label pb-2 pt-2">
+                            <label className="label">
                                 <span className="label-text font-medium">
                                     Password
                                 </span>
@@ -157,7 +157,7 @@ const SignUpPage = () => {
                         {/* submit button */}
                         <button
                             type="submit"
-                            className="btn btn-primary w-full mt-5"
+                            className="btn btn-primary w-full"
                             disabled={isSigningUp}
                         >
                             {isSigningUp ?
