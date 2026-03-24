@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { axiosInstance } from '../lib/axios';
+import { axiosInstance } from '../lib/axios.js';
 import toast from 'react-hot-toast';
 
 // zustand is a global state manager
@@ -12,10 +12,11 @@ export const useAuthStore = create((set) => ({
 
     checkAuth: async () => {
         try {
-            const res = await axiosInstance.get('/auth/check');
+            console.log('poipoipoipo')
+            const res = await axiosInstance.get("/auth/check");
             set({ authUser: res.data });
         } catch (error) {
-            console.error('Error in checkAuth: ', error);
+            console.log("Error in checkAuth:", error);
             set({ authUser: null });
         } finally {
             set({ isCheckingAuth: false });
@@ -35,13 +36,28 @@ export const useAuthStore = create((set) => ({
         }
     },
 
+    login: async (data) => {
+        set({ isLoggingIn: true });
+
+        try {
+            const res = await axiosInstance.post('/auth/login', data);
+            set({ authUser: res.data });
+            toast.success('Logged in succesfully.');
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+        } finally {
+            set({ isLoggingIn: false });
+        }
+    },
+
     logout: async () => {
         try {
             await axiosInstance.post('/auth/logout');
             set({ authUser: null });
-            toast.success('Logged out succesfully.');
+            toast.success('Logged out successfully.');
         } catch (error) {
             toast.error(error.response.data.message);
         }
-    }
+    },
 }))

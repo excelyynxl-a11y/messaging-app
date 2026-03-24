@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-// generate a token suring signing up
+// generate a token during signing up
 export const generateToken = (userId, res) => {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
         expiresIn: "7d", // meaning a token only last for 7 days
@@ -10,7 +10,7 @@ export const generateToken = (userId, res) => {
     res.cookie("jwt", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in millisecs 
         httpOnly: true, // prevent XSS attacks cross-site scripting attacks 
-        smaeSite: "strict", // CSRF attacks cross-site request forgery attacks
+        sameSite: "strict", // CSRF attacks cross-site request forgery attacks
         secure: process.env.NODE_ENV !== "development", 
     });
 
