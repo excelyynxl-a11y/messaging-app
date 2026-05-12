@@ -105,7 +105,8 @@ export const updateProfile = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { profilePic: uploadResponse.secure_url },
-            { new: true }  
+            { new: true } // tell Mongoose to return the document after the update is applied, 
+            // rather than the old version
         );
 
         res.status(200).json(updatedUser); 
